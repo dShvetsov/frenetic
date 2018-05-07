@@ -34,11 +34,16 @@ let implement_flow (writer : Writer.t) (fdd : Frenetic_netkat.Local_compiler.t)
     (* do not include meta value for table start, else everything drops *)
     let pat = if m_id = 0 then (Oxm.from_of_pattern row.pattern)
       else (OxmMetadata (mask_meta m_id))::(Oxm.from_of_pattern row.pattern) in
-    let insts = match row.instruction with
+    let insts_before = match row.instruction with
       | `Action action_group -> Instructions.from_of_group action_group
       | `GotoTable (goto_t, goto_m) ->
         [WriteMetadata (mask_meta goto_m); GotoTable goto_t]
     in
+    (*
+    let insts_goto =  [ WriteMetadata (mask_meta prio) ; GotoTable 1 ] in
+    let insts = insts_before @ insts_goto in
+    *)
+    let insts = insts_before in
     let message = Message.FlowModMsg (add_flow ~tbl ~prio ~pat ~insts) in
     Logging.info "Sending flow to switch %Ld\n\ttable:%d\n\tpriority:%d\n\tpattern:%s\n\tinstructions:%s"
       sw_id tbl prio (Oxm.match_to_string pat) (Instructions.to_string insts);
