@@ -631,7 +631,7 @@ module Action = struct
       let open Value in
       let init =
         match Seq.find seq (F Location) with
-        | None           -> [SDN.(Output(InPort))]
+        | None           -> []
         | Some (Const p) -> [SDN.(Output(to_port p))]
         | Some (Pipe  _) -> [SDN.(Output(Controller 128))]
         | Some (Query _) -> assert false

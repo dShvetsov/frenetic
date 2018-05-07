@@ -39,11 +39,8 @@ let implement_flow (writer : Writer.t) (fdd : Frenetic_netkat.Local_compiler.t)
       | `GotoTable (goto_t, goto_m) ->
         [WriteMetadata (mask_meta goto_m); GotoTable goto_t]
     in
-    (*
     let insts_goto =  [ WriteMetadata (mask_meta prio) ; GotoTable 1 ] in
     let insts = insts_before @ insts_goto in
-    *)
-    let insts = insts_before in
     let message = Message.FlowModMsg (add_flow ~tbl ~prio ~pat ~insts) in
     Logging.info "Sending flow to switch %Ld\n\ttable:%d\n\tpriority:%d\n\tpattern:%s\n\tinstructions:%s"
       sw_id tbl prio (Oxm.match_to_string pat) (Instructions.to_string insts);

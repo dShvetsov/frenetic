@@ -3926,7 +3926,7 @@ module Instructions = struct
   let from_of_group (group : OpenFlow.group) : t =
     (* group is a singleton list containing a list of lists of actions *)
     match group with
-    | []        -> [GotoTable 1](*[]*)
+    | []        -> []
     | par :: [] -> [ApplyActions (List.concat (List.map par ~f:Action.from_of_seq))]
     (* TODO(mulias): this is a bug. When running mininet with ovs 2.0.2, a non
      * singleton action group would not be propperly processed by the switch. *)
