@@ -34,10 +34,9 @@ let implement_flow (writer : Writer.t) (fdd : Frenetic_netkat.Local_compiler.t)
     (* do not include meta value for table start, else everything drops *)
     let pat = if m_id = 0 then (Oxm.from_of_pattern row.pattern)
       else (OxmMetadata (mask_meta m_id))::(Oxm.from_of_pattern row.pattern) in
+    (* Must order prereq  *)
     let pat_reversed = List.rev pat in
     let insts_before = match row.instruction with
-    (* Must order prereq  *)
-    let insts = match row.instruction with
       | `Action action_group -> Instructions.from_of_group action_group
       | `GotoTable (goto_t, goto_m) ->
         [WriteMetadata (mask_meta goto_m); GotoTable goto_t]
