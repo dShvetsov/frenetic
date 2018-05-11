@@ -17,7 +17,7 @@ let implement_group_table (writer : Writer.t) (tbl : Frenetic_kernel.GroupTable0
 
 (* Add mask so that the meta value can be changed *)
 let mask_meta (meta_id : int) =
-  Frenetic_kernel.OpenFlow0x04.{ m_value = Int64.of_int meta_id; m_mask = Some 64L }
+  Frenetic_kernel.OpenFlow0x04.{ m_value = Int64.of_int meta_id; m_mask = Some 0xffffffffL }
 
 (* Send FlowMod messages to switch to implement policy *)
 let implement_flow (writer : Writer.t) (fdd : Frenetic_netkat.Local_compiler.t)
