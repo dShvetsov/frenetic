@@ -3895,6 +3895,13 @@ module Instruction = struct
 
 end
 
+(* Add mask so that the meta value can be changed *)
+let mask_meta (port : OpenFlow.pseudoport) =
+    match port with
+    | Physical p ->
+        {m_value = Int64.of_int32 p; m_mask = Some 0xffffffffL}
+    | _ -> failwith "This must not happend"
+
 module Instructions = struct
 
   type t = instruction list [@@deriving sexp]
@@ -3927,6 +3934,9 @@ module Instructions = struct
     (* group is a singleton list containing a list of lists of actions *)
     match group with
     | []        -> []
+        (* TODO: change this shit *)
+    | [[OpenFlow.Output port]] :: []  ->
+             [ WriteMetadata (mask_meta port); GotoTable 1]
     | par :: [] -> [ApplyActions (List.concat (List.map par ~f:Action.from_of_seq))]
     (* TODO(mulias): this is a bug. When running mininet with ovs 2.0.2, a non
      * singleton action group would not be propperly processed by the switch. *)

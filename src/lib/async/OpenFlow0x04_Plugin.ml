@@ -37,12 +37,13 @@ let implement_flow (writer : Writer.t) (fdd : Frenetic_netkat.Local_compiler.t)
     (* Must order prereq  *)
     let pat_reversed = List.rev pat in
     let insts_before = match row.instruction with
-      | `Action action_group -> Instructions.from_of_group action_group
+      | `Action action_group -> Logging.info "Action group";  Instructions.from_of_group action_group
       | `GotoTable (goto_t, goto_m) ->
         [WriteMetadata (mask_meta goto_m); GotoTable goto_t]
     in
-    let insts_goto =  [ WriteMetadata (mask_meta prio) ; GotoTable 1 ] in
-    let insts = insts_before @ insts_goto in
+    (* let insts_goto =  [ WriteMetadata (mask_meta prio) ; GotoTable 1 ] in *)
+    (* let insts = insts_before @ insts_goto in                              *)
+    let insts = insts_before in
     let message = Message.FlowModMsg (add_flow ~tbl ~prio ~pat:pat_reversed ~insts) in
     Logging.info "Sending flow to switch %Ld\n\ttable:%d\n\tpriority:%d\n\tpattern:%s\n\tinstructions:%s"
       sw_id tbl prio (Oxm.match_to_string pat_reversed) (Instructions.to_string insts);
